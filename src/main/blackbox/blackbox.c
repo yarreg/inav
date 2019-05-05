@@ -66,6 +66,8 @@
 
 #include "navigation/navigation.h"
 
+#include "rx/rx.h"
+
 #include "sensors/diagnostics.h"
 #include "sensors/acceleration.h"
 #include "sensors/barometer.h"
@@ -76,8 +78,6 @@
 #include "sensors/rangefinder.h"
 #include "sensors/sensors.h"
 #include "sensors/temperature.h"
-
-#include "rx/rx.h"
 
 #if defined(ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT)
 #define DEFAULT_BLACKBOX_DEVICE     BLACKBOX_DEVICE_FLASH
@@ -1380,13 +1380,17 @@ static void loadMainState(timeUs_t currentTimeUs)
 #endif
 
     const rcCommand_t *controlOutput = rcControlGetOutput();
-    for (int i = 0; i < 4; i++) {
+
+    for (int i = 0; i < 3; i++) {
         blackboxCurrent->rcData[i] = rxGetChannelValue(i);
-        // TODO: This changes THR to always be represented
-        // in bidirectional mode in logs. What should be
-        // done here?
-        blackboxCurrent->rcCommand[i] = rcCommandToPWMValue(controlOutput->axes[i]);
+        // BB expects rcCommand RPY range = [-500, 500]
+        blackboxCurrent->rcCommand[i] = controlOutput->axes[i] * 500;
     }
+
+    blackboxCurrent->rcData[THROTTLE] = rxGetChannelValue(THROTTLE);
+    // BB expects rcCommand THR range = [minthrottle, maxthrottle]
+    int throttleRange = motorConfig()->maxthrottle - motorConfig()->minthrottle;
+    blackboxCurrent->rcCommand[THROTTLE] = motorConfig()->minthrottle + throttleRange / 2 + controlOutput->throttle * throttleRange;
 
     blackboxCurrent->attitude[0] = attitude.values.roll;
     blackboxCurrent->attitude[1] = attitude.values.pitch;
