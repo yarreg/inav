@@ -144,10 +144,10 @@ static bool commandBatchError = false;
 static const char * const featureNames[] = {
     "THR_VBAT_COMP", "VBAT", "TX_PROF_SEL", "BAT_PROF_AUTOSWITCH", "MOTOR_STOP",
     "", "SOFTSERIAL", "GPS", "",
-    "", "TELEMETRY", "CURRENT_METER", "3D", "RX_PARALLEL_PWM",
-    "RX_MSP", "RSSI_ADC", "LED_STRIP", "DASHBOARD", "",
+    "", "TELEMETRY", "CURRENT_METER", "3D", "",
+    "", "RSSI_ADC", "LED_STRIP", "DASHBOARD", "",
     "BLACKBOX", "", "TRANSPONDER", "AIRMODE",
-    "SUPEREXPO", "VTX", "RX_SPI", "", "PWM_SERVO_DRIVER", "PWM_OUTPUT_ENABLE",
+    "SUPEREXPO", "VTX", "", "", "PWM_SERVO_DRIVER", "PWM_OUTPUT_ENABLE",
     "OSD", "FW_LAUNCH", NULL
 };
 
